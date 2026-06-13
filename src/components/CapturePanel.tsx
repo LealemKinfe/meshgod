@@ -15,6 +15,7 @@ interface CapturePanelProps {
   handleStartRecording: () => void;
   handleStopRecording: () => void;
   handleExportSequence: () => void;
+  handleExportSvg?: () => void;
 }
 
 export default function CapturePanel({
@@ -32,6 +33,7 @@ export default function CapturePanel({
   handleStartRecording,
   handleStopRecording,
   handleExportSequence,
+  handleExportSvg,
 }: CapturePanelProps) {
   // Format recording timer: 00:00
   const formatTime = (seconds: number) => {
@@ -51,7 +53,7 @@ export default function CapturePanel({
         <p className="help-text" style={{ marginBottom: '12px' }}>
           Outputs high-fidelity renders at 4K (3840x2160) directly from the WebGL context.
         </p>
-        <div className="grid-2">
+        <div className="grid-2" style={{ marginBottom: handleExportSvg ? '12px' : '0' }}>
           <button 
             className="btn-action" 
             onClick={() => handleCaptureImage('png')}
@@ -69,6 +71,22 @@ export default function CapturePanel({
             Capture WebP
           </button>
         </div>
+        {handleExportSvg && (
+          <button 
+            className="btn-action btn-primary" 
+            onClick={handleExportSvg}
+            disabled={isRecording || isExportingSequence}
+            style={{ 
+              width: '100%', 
+              background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', 
+              border: 'none',
+              boxShadow: '0 4px 15px rgba(217, 119, 6, 0.2)' 
+            }}
+          >
+            <Download size={14} />
+            Export Vector SVG
+          </button>
+        )}
       </div>
 
       {/* Video Capturing */}

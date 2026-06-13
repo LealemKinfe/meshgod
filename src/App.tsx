@@ -219,6 +219,36 @@ export default function App() {
     }
   };
 
+  const handleExportSvg = () => {
+    if (!captureRef.current || !captureRef.current.captureSvg) {
+      alert("Canvas is not ready yet.");
+      return;
+    }
+    try {
+      showToast("Generating Vector SVG...");
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const svgContent = captureRef.current.captureSvg();
+          if (!svgContent) {
+            showToast("Failed to generate SVG.");
+            return;
+          }
+          const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.download = `meshgod-vector-${activeObject}-${Date.now()}.svg`;
+          a.href = url;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast("Downloaded Vector SVG successfully!");
+        }, 100);
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to export SVG wireframe.");
+    }
+  };
+
   const capturePanelProps = {
     isRecording,
     recordingTime,
@@ -234,6 +264,7 @@ export default function App() {
     handleStartRecording,
     handleStopRecording,
     handleExportSequence,
+    handleExportSvg: appMode === 'mesh' ? handleExportSvg : undefined,
   };
 
   // Custom Local SVG Upload Handler
@@ -354,6 +385,18 @@ export default function App() {
             <Sparkles size={14} />
             <span>WebP</span>
           </button>
+          {appMode === 'mesh' && (
+            <button 
+              className="floating-cap-btn" 
+              onClick={handleExportSvg}
+              disabled={isRecording || isExportingSequence}
+              title="Export SVG"
+              style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', border: 'none' }}
+            >
+              <Download size={14} />
+              <span>SVG</span>
+            </button>
+          )}
           {isRecording ? (
             <button 
               className="floating-cap-btn floating-cap-btn-recording" 
