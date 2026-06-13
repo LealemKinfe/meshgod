@@ -644,3 +644,91 @@ input:checked + .slider:before {
   color: var(--text-muted);
   margin-top: 4px;
 }
+
+/* Collapsible Control Panel styling */
+.control-panel {
+  position: relative; /* to position collapse button */
+}
+
+.control-panel.collapsed {
+  width: 0px !important;
+  border-left-color: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  overflow: visible !important; /* to let the toggle button show */
+}
+
+.collapse-toggle-btn {
+  position: absolute;
+  top: 50%;
+  left: -24px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 48px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-right: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  transition: var(--transition-smooth);
+}
+
+.collapse-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+/* Floating Capture Controls when collapsed */
+.floating-capture-bar {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  gap: 8px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.floating-cap-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.floating-cap-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border-focus);
+}
+
+.floating-cap-btn-recording {
+  background: #ef4444 !important;
+  animation: pulseRecording 1.5s infinite alternate;
+  border: none;
+}

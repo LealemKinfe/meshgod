@@ -1,128 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Video, Square, Sparkles, Download, Loader2, Film } from 'lucide-react';
 
 interface CapturePanelProps {
-  captureRef: React.MutableRefObject<any>;
-  showToast: (msg: string) => void;
+  isRecording: boolean;
+  recordingTime: number;
+  isExportingSequence: boolean;
+  exportProgress: { current: number; total: number };
+  sequenceDuration: number;
+  setSequenceDuration: (v: number) => void;
+  sequenceFps: number;
+  setSequenceFps: (v: number) => void;
+  sequenceResolution: 'current' | '4k';
+  setSequenceResolution: (v: 'current' | '4k') => void;
+  handleCaptureImage: (format: 'png' | 'webp') => void;
+  handleStartRecording: () => void;
+  handleStopRecording: () => void;
+  handleExportSequence: () => void;
 }
 
-export default function CapturePanel({ captureRef, showToast }: CapturePanelProps) {
-  // WebM Recording States
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const timerIntervalRef = useRef<any>(null);
-
-  // PNG Sequence Exporting States
-  const [isExportingSequence, setIsExportingSequence] = useState(false);
-  const [exportProgress, setExportProgress] = useState({ current: 0, total: 0 });
-  const [sequenceDuration, setSequenceDuration] = useState(3); // default 3 seconds
-  const [sequenceFps, setSequenceFps] = useState(60); // default 60 FPS
-  const [sequenceResolution, setSequenceResolution] = useState<'current' | '4k'>('current');
-
+export default function CapturePanel({
+  isRecording,
+  recordingTime,
+  isExportingSequence,
+  exportProgress,
+  sequenceDuration,
+  setSequenceDuration,
+  sequenceFps,
+  setSequenceFps,
+  sequenceResolution,
+  setSequenceResolution,
+  handleCaptureImage,
+  handleStartRecording,
+  handleStopRecording,
+  handleExportSequence,
+}: CapturePanelProps) {
   // Format recording timer: 00:00
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   };
-
-  const handleCaptureImage = (format: 'png' | 'webp') => {
-    if (!captureRef.current) {
-      alert("Canvas is not ready yet.");
-      return;
-    }
-    
-    try {
-      showToast(`Generating 4K ${format.toUpperCase()} Render...`);
-      // Use requestAnimationFrame to ensure the toast registers on screen first
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          const dataUrl = captureRef.current.captureImage(format);
-          const a = document.createElement('a');
-          a.download = `meshgod-4k-${Date.now()}.${format}`;
-          a.href = dataUrl;
-          a.click();
-          showToast(`Downloaded 4K ${format.toUpperCase()} successfully!`);
-        }, 100);
-      });
-    } catch (err) {
-      console.error(err);
-      alert("Failed to render and capture at 4K resolution.");
-    }
-  };
-
-  const handleStartRecording = () => {
-    if (!captureRef.current) return;
-    
-    setIsRecording(true);
-    setRecordingTime(0);
-    showToast("Recording 50 Mbps high-quality video...");
-
-    timerIntervalRef.current = setInterval(() => {
-      setRecordingTime((prev) => prev + 1);
-    }, 1000);
-
-    captureRef.current.startRecording((blob: Blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `meshgod-transparent-${Date.now()}.webm`;
-      a.click();
-      showToast("Pristine WebM downloaded successfully!");
-    });
-  };
-
-  const handleStopRecording = () => {
-    if (!captureRef.current) return;
-
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-    }
-    
-    captureRef.current.stopRecording();
-    setIsRecording(false);
-    showToast("Compiling video file...");
-  };
-
-  const handleExportSequence = async () => {
-    if (!captureRef.current) return;
-    
-    setIsExportingSequence(true);
-    setExportProgress({ current: 0, total: sequenceDuration * sequenceFps });
-
-    try {
-      const zippedData = await captureRef.current.recordPngSequence(
-        sequenceDuration,
-        sequenceFps,
-        sequenceResolution,
-        (current: number, total: number) => {
-          setExportProgress({ current, total });
-        }
-      );
-
-      const blob = new Blob([zippedData], { type: 'application/zip' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.download = `meshgod-sequence-${sequenceResolution === '4k' ? '4k-' : ''}${Date.now()}.zip`;
-      a.href = url;
-      a.click();
-      showToast("ZIP sequence saved successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to export PNG sequence.");
-    } finally {
-      setIsExportingSequence(false);
-    }
-  };
-
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div className="capture-controls">
