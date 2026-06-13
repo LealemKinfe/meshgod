@@ -18,7 +18,7 @@
     "lucide-react": "^1.18.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "sentient-mesh": "^1.1.4",
+    "sentient-mesh": "^1.1.6",
     "three": "^0.184.0",
     "three-stdlib": "^2.36.1"
   },

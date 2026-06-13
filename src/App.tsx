@@ -607,6 +607,9 @@ export default function App() {
                       <option value="low-poly-fabric">Low Poly Fabric</option>
                       <option value="klein-bottle">Klein Bottle</option>
                       <option value="mobius-strip">Möbius Strip</option>
+                      <option value="wormhole">Wormhole</option>
+                      <option value="black-hole">Black Hole</option>
+                      <option value="white-hole">White Hole</option>
                       <option value="svg">SVG Vector Path</option>
                     </select>
                   </div>
