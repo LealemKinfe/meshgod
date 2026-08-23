@@ -29,7 +29,25 @@ import SpaceCanvas from './components/SpaceCanvas';
 import type { CelestialBody } from './components/SpaceCanvas';
 import CapturePanel from './components/CapturePanel';
 import CodeExportModal from './components/CodeExportModal';
-import type { SentientMeshProps } from 'sentient-mesh';
+import type { SentientMeshProps, SentientMeshShape } from 'sentient-mesh';
+
+const SHAPE_OPTIONS: { value: SentientMeshShape; label: string }[] = [
+  { value: 'sphere', label: 'Sphere' },
+  { value: 'torus-knot', label: 'Torus Knot' },
+  { value: 'torus', label: 'Torus' },
+  { value: 'box', label: 'Cube' },
+  { value: 'cylinder', label: 'Cylinder' },
+  { value: 'hyperboloid', label: 'Hyperboloid' },
+  { value: 'low-poly-fabric', label: 'Low Poly Fabric' },
+  { value: 'klein-bottle', label: 'Klein Bottle' },
+  { value: 'mobius-strip', label: 'Möbius Strip' },
+  { value: 'dinis-surface', label: "Dini's Surface" },
+  { value: 'enneper-surface', label: 'Enneper Surface' },
+  { value: 'wormhole', label: 'Wormhole' },
+  { value: 'black-hole', label: 'Black Hole' },
+  { value: 'white-hole', label: 'White Hole' },
+  { value: 'svg', label: 'SVG Vector Path' },
+];
 
 const INITIAL_PLANETS: CelestialBody[] = [
   { id: 'sun', name: 'Sun (Star)', mass: 15.0, radius: 0.8, color: '#FF9F1C', position: [0, 0, 0], velocity: [0, 0, 0], isStatic: true, enabled: true },
@@ -598,19 +616,13 @@ export default function App() {
                     <select 
                       className="select-input" 
                       value={activeObject} 
-                      onChange={(e) => setActiveObject(e.target.value as any)}
+                      onChange={(e) => setActiveObject(e.target.value as SentientMeshShape)}
                     >
-                      <option value="sphere">Sphere</option>
-                      <option value="torus-knot">Torus Knot</option>
-                      <option value="box">Cube</option>
-                      <option value="cylinder">Cylinder</option>
-                      <option value="low-poly-fabric">Low Poly Fabric</option>
-                      <option value="klein-bottle">Klein Bottle</option>
-                      <option value="mobius-strip">Möbius Strip</option>
-                      <option value="wormhole">Wormhole</option>
-                      <option value="black-hole">Black Hole</option>
-                      <option value="white-hole">White Hole</option>
-                      <option value="svg">SVG Vector Path</option>
+                      {SHAPE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
